@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 
 public class PostManager
 {
-    private string CONNECTION = "Data Source=DESKTOP-P612TBL; initial catalog=ClubBAISTDB; integrated security=true";
+    private string CONNECTION = "Data Source=DESKTOP-P612TBL; initial catalog=FalaBricksDB; integrated security=true";
 
     private SqlConnection Connection(string name)
     {
