@@ -116,38 +116,39 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 
             SqlDataReader reader;
             List<Post> MainPostList = new List<Post>();
-            int postID = 0;
-            string UserName = null;
-            DateTime PostDate;
-            string Title = null;
-            string PostText = null;
-            int UpCount = 0;
-            int DownCount = 0;
-            bool IsAMainPost = false;
-            int MainPostReferenceID = 0;
-            bool ContainsImage = false;
+            //int postID = 0;
+            //string UserName = null;
+            //DateTime PostDate;
+            //string Title = null;
+            //string PostText = null;
+            //int UpCount = 0;
+            //int DownCount = 0;
+            //bool IsAMainPost = false;
+            //int MainPostReferenceID = 0;
+            //bool ContainsImage = false;
 
             connection.Open();
 
             reader = GetMainPostCommand.ExecuteReader();
 
-            while (reader.Read())
-            {
-                postID = reader.GetInt32(reader.GetOrdinal("postID"));
-                UserName = reader["UserName"].ToString();
-                PostDate = reader.GetDateTime(reader.GetOrdinal("PostDate"));
-                Title = reader["Title"].ToString();
-                PostText = reader["PostText"].ToString();
-                UpCount = reader.GetInt32(reader.GetOrdinal("UpCount"));
-                DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
-                IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
-                MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
-                ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
+            MainPostList = GetPostFromReader(reader);
+            //while (reader.Read())
+            //{
+            //    postID = reader.GetInt32(reader.GetOrdinal("postID"));
+            //    UserName = reader["UserName"].ToString();
+            //    PostDate = reader.GetDateTime(reader.GetOrdinal("PostDate"));
+            //    Title = reader["Title"].ToString();
+            //    PostText = reader["PostText"].ToString();
+            //    UpCount = reader.GetInt32(reader.GetOrdinal("UpCount"));
+            //    DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
+            //    IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
+            //    MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
+            //    ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
 
-                Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
-                    DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);
-                MainPostList.Add(newPost);
-            }
+            //    Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
+            //        DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);
+            //    MainPostList.Add(newPost);
+            //}
             connection.Close();
 
             return MainPostList;
@@ -165,38 +166,39 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 
             SqlDataReader reader;
             List<Post> MainPostList = new List<Post>();
-            int postID = 0;
-            string UserName = null;
-            DateTime PostDate;
-            string Title = null;
-            string PostText = null;
-            int UpCount = 0;
-            int DownCount = 0;
-            bool IsAMainPost = false;
-            int MainPostReferenceID = 0;
-            bool ContainsImage = false;
+            //int postID = 0;
+            //string UserName = null;
+            //DateTime PostDate;
+            //string Title = null;
+            //string PostText = null;
+            //int UpCount = 0;
+            //int DownCount = 0;
+            //bool IsAMainPost = false;
+            //int MainPostReferenceID = 0;
+            //bool ContainsImage = false;
 
             connection.Open();
 
             reader = GetMainPostByPageCommand.ExecuteReader();
 
-            while (reader.Read())
-            {
-                postID = reader.GetInt32(reader.GetOrdinal("postID"));
-                UserName = reader["UserName"].ToString();
-                PostDate = reader.GetDateTime(reader.GetOrdinal("PostDate"));
-                Title = reader["Title"].ToString();
-                PostText = reader["PostText"].ToString();
-                UpCount = reader.GetInt32(reader.GetOrdinal("UpCount"));
-                DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
-                IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
-                MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
-                ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
+            MainPostList = GetPostFromReader(reader);
+            //while (reader.Read())
+            //{
+            //    postID = reader.GetInt32(reader.GetOrdinal("postID"));
+            //    UserName = reader["UserName"].ToString();
+            //    PostDate = reader.GetDateTime(reader.GetOrdinal("PostDate"));
+            //    Title = reader["Title"].ToString();
+            //    PostText = reader["PostText"].ToString();
+            //    UpCount = reader.GetInt32(reader.GetOrdinal("UpCount"));
+            //    DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
+            //    IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
+            //    MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
+            //    ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
 
-                Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
-                    DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);
-                MainPostList.Add(newPost);
-            }
+            //    Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
+            //        DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);
+            //    MainPostList.Add(newPost);
+            //}
             connection.Close();
 
             return MainPostList;
@@ -234,6 +236,65 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             connection.Close();
 
             return ImagesInPost;
+        }
+
+        public List<Post> GetThreadByMainPostReference(int mainPostReferenceID)
+        {
+            SqlConnection connection = Connection(CONNECTION);
+            SqlCommand GetThreadCommand = StoredProcedureCommand("GetThreadByMainPostReference", connection);
+
+            SqlParameter MainPostReferenceParameter = InputParameter("@MainPostReference", SqlDbType.Int);
+            MainPostReferenceParameter.Value = mainPostReferenceID;
+
+            GetThreadCommand.Parameters.Add(MainPostReferenceParameter);
+
+            SqlDataReader reader;
+            List<Post> ThreadPosts = new List<Post>();
+
+            connection.Open();
+
+            reader = GetThreadCommand.ExecuteReader();
+
+            ThreadPosts = GetPostFromReader(reader);
+
+            connection.Close();
+
+            return ThreadPosts;
+        }
+
+        private List<Post> GetPostFromReader(SqlDataReader reader)
+        {
+            List<Post> list = new List<Post>();
+            int postID = 0;
+            string UserName = null;
+            DateTime PostDate;
+            string Title = null;
+            string PostText = null;
+            int UpCount = 0;
+            int DownCount = 0;
+            bool IsAMainPost = false;
+            int MainPostReferenceID = 0;
+            bool ContainsImage = false;
+
+            while (reader.Read())
+            {
+                postID = reader.GetInt32(reader.GetOrdinal("postID"));
+                UserName = reader["UserName"].ToString();
+                PostDate = reader.GetDateTime(reader.GetOrdinal("PostDate"));
+                Title = reader["Title"].ToString();
+                PostText = reader["PostText"].ToString();
+                UpCount = reader.GetInt32(reader.GetOrdinal("UpCount"));
+                DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
+                IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
+                MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
+                ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
+
+                Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
+                    DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);
+                list.Add(newPost);
+            }
+
+            return list;
         }
     }
 }
