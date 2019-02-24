@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace FalaBrick.LegoSystem.Domain
+namespace FalaBricks.LegoSystem.Domain
 {
     public class Image
     {

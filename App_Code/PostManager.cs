@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using System.Data.SqlClient;
-using FalaBrick.LegoSystem.Domain;
+using FalaBricks.LegoSystem.Domain;
 
-namespace FalaBrick.LegoSystem.TechnicalServices
+namespace FalaBricks.LegoSystem.TechnicalServices
 {
     public class PostManager
     {
