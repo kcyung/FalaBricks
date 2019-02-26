@@ -7,7 +7,7 @@
     <title></title>
     <link href="css/bootstrap.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
+    <link href="css/style.css" rel="stylesheet" />
     <asp:ContentPlaceHolder id="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
@@ -22,10 +22,10 @@
             </button>
             <div class="navbar-nav" id="navbarSupportedContent">
                 <a class="nav-link" href="Default.aspx">Home <span class="sr-only">(Current)</span></a>
-                <div class="nav-item dropdown" style="text-align:right;" >
+                <div class="nav-item dropdown" >
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink" style="position: absolute; right:0;">
                         <a class="dropdown-item" href="Login.aspx">Login</a>
                         <a class="dropdown-item" href="Register.aspx">Register</a>
                     </div>
