@@ -1,0 +1,54 @@
+﻿body {
+}
+
+.PostContainer
+{
+    width: 500px;
+    height: 300px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    grid-gap:5px;
+}
+
+.PostImage
+{
+    grid-column: 7/10;
+    grid-row: 1/4;
+}
+
+.PostUser
+{
+    grid-column: 1/7;
+    grid-row:1/2;
+}
+
+.PostTitle
+{
+    grid-column: 1/7;
+    grid-row:2/3;
+}
+
+.PostUpvote
+{
+    grid-column: 1/2;
+    grid-row:3/4;
+}
+
+.PostDownVote 
+{
+    grid-column: 2/3;
+    grid-row: 3/4;
+}
+
+.PostComment 
+{
+    grid-column: 3/4;
+    grid-row: 3/4;
+}
+
+.PostSave
+{
+    grid-column: 4/5;
+    grid-row: 3/4;
+}
