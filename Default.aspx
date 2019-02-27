@@ -1,9 +1,9 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="FalaBricks.LegoSystem.UI._Default" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-    <div style="padding: 30px;">
+    <div style="padding: 30px;" runat="server" id="Main">
         <div class="PostContainer" style="margin: 0 auto;">
             <asp:Label ID="SubmitLbl" runat="server" Text="Submitted By: X" CssClass="PostUser" Font-Bold="True" Font-Size="Larger"></asp:Label>
             <img src="image/img150.png" class="PostImage" />
