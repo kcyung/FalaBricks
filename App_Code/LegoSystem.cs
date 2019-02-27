@@ -47,5 +47,19 @@ namespace FalaBricks.LegoSystem.Domain
             PostManager Manager = new PostManager();
             return Manager.GetThreadByMainPostReference(mainPostReferenceID);
         }
+
+        public bool ModifyUpCount(int postID, int upCount)
+        {
+            PostManager Manager = new PostManager();
+            bool Success = Manager.UpdateUpvoteCounter(postID, upCount);
+            return Success;
+        }
+
+        public bool ModifyDownCount(int postID, int upCount)
+        {
+            PostManager Manager = new PostManager();
+            bool Success = Manager.UpdateDownvoteCounter(postID, upCount);
+            return Success;
+        }
     }
 }

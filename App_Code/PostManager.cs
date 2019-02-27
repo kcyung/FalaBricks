@@ -262,6 +262,50 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             return ThreadPosts;
         }
 
+        // Update the Upvote counter
+        public bool UpdateUpvoteCounter(int postID, int upCount)
+        {
+            SqlConnection connection = Connection(CONNECTION);
+            SqlCommand UpdateUpCounterCommand = StoredProcedureCommand("UpdateUpCounter", connection);
+
+            SqlParameter PostIDParameter = InputParameter("PostID", SqlDbType.Int);
+            PostIDParameter.Value = postID;
+            SqlParameter UpCountParameter = InputParameter("@UpCount", SqlDbType.Int);
+            UpCountParameter.Value = upCount;
+
+            UpdateUpCounterCommand.Parameters.Add(PostIDParameter);
+            UpdateUpCounterCommand.Parameters.Add(UpCountParameter);
+            int rowsAffected = 0;
+
+            connection.Open();
+            rowsAffected = UpdateUpCounterCommand.ExecuteNonQuery();
+            connection.Close();
+
+            return rowsAffected.Equals(1);
+        }
+
+        // Update the Downvote counter
+        public bool UpdateDownvoteCounter(int postID, int downCount)
+        {
+            SqlConnection connection = Connection(CONNECTION);
+            SqlCommand UpdateDownCounterCommand = StoredProcedureCommand("UpdateDownCounter", connection);
+
+            SqlParameter PostIDParameter = InputParameter("PostID", SqlDbType.Int);
+            PostIDParameter.Value = postID;
+            SqlParameter DownCountParameter = InputParameter("@DownCount", SqlDbType.Int);
+            DownCountParameter.Value = downCount;
+
+            UpdateDownCounterCommand.Parameters.Add(PostIDParameter);
+            UpdateDownCounterCommand.Parameters.Add(DownCountParameter);
+            int rowsAffected = 0;
+
+            connection.Open();
+            rowsAffected = UpdateDownCounterCommand.ExecuteNonQuery();
+            connection.Close();
+
+            return rowsAffected.Equals(1);
+        }
+
         private List<Post> GetPostFromReader(SqlDataReader reader)
         {
             List<Post> list = new List<Post>();
