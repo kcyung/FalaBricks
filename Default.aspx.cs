@@ -12,6 +12,34 @@ namespace FalaBricks.LegoSystem.UI
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // DISPLAYING ALL POSTS ON MAIN PAGE
+            LS Controller = new LS();
+            List<Post> mainPosts = Controller.FindMainForumPost();
+
+            foreach(Post mp in mainPosts)
+            {
+                // Display Username + DateTime of Post
+                // Display Title
+                // Check if there's an image + post it
+                // Display UpVote CheckBox, Counter, DownVote Check Box
+                
+                // Comment counter for the thread 
+                int threadCount = mp.GetThreadCount();
+            }
+
+            // DISPLAYING ALL THREADPOST
+            int mainPostID = 1;
+            List<Post> threadPosts = Controller.FindThreadPostByMainPostReference(mainPostID);
+            
+            foreach(Post tp in threadPosts)
+            {
+                // Dispaly UserName + Display DateTime
+                // Display Title
+                // Check if there's postText - and display it if true
+                // Check if there's images and display all images 
+                // Display UpVote CB, Counter, DownVote CB, Add Reply Button
+            }      
+
             Post post = new Post(1, "henry", DateTime.Now, "title", "blah blah blah", 0, 0, true, 1, true);
 
             System.Web.UI.HtmlControls.HtmlGenericControl createDiv = new System.Web.UI.HtmlControls.HtmlGenericControl("DIV");

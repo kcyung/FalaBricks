@@ -6,7 +6,7 @@ using FalaBricks.LegoSystem.TechnicalServices;
 
 namespace FalaBricks.LegoSystem.Domain
 {
-    public class LegoSystem
+    public class LS
     {
         // Adds a post to the database
         public bool CreatePost(string userName, DateTime postDate, string title, string postText,

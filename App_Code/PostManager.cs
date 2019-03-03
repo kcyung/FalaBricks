@@ -306,6 +306,26 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             return rowsAffected.Equals(1);
         }
 
+        public int GetThreadCount(int mainPostReference)
+        {
+            SqlConnection connection = Connection(CONNECTION);
+            SqlCommand GetThreadCountCommand = StoredProcedureCommand("GetThreadCount", connection);
+
+            SqlParameter MainPostReferenceParameter = InputParameter("MainPostReference", SqlDbType.Int);
+            MainPostReferenceParameter.Value = MainPostReferenceParameter;
+
+            GetThreadCountCommand.Parameters.Add(MainPostReferenceParameter);
+
+            int ThreadCount = Int32.MinValue;
+            SqlDataReader reader;
+
+            connection.Open();
+            reader = GetThreadCountCommand.ExecuteReader();
+            ThreadCount = reader.GetInt32(reader.GetOrdinal("ThreadCount"));
+            connection.Close();
+            return ThreadCount;
+        }
+
         private List<Post> GetPostFromReader(SqlDataReader reader)
         {
             List<Post> list = new List<Post>();

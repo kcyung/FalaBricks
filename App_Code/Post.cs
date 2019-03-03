@@ -1,7 +1,8 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using FalaBricks.LegoSystem.TechnicalServices;
 
 namespace FalaBricks.LegoSystem.Domain
 {
@@ -35,6 +36,13 @@ namespace FalaBricks.LegoSystem.Domain
             MainPostReferenceID = mainPostReferenceID;
             ContainsImage = containsImage;
             PostImages = null;
+        }
+
+        // Methods
+        public int GetThreadCount()
+        {
+            PostManager Manager = new PostManager();
+            return Manager.GetThreadCount(MainPostReferenceID);
         }
     }
 }
