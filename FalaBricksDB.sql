@@ -71,7 +71,7 @@ AS
 				SET @ReturnCode = 0
 			ELSE 
 				RAISERROR('StoredProcedure - AddPost - INSERT Error', 16, 1)
-		END
+		ENDs
 	RETURN @ReturnCode
 GO				
 
@@ -101,14 +101,19 @@ AS
 	RETURN @ReturnCode
 GO				
 
--- Returns all main posts 
+
+-- Returns all main posts order by the most recent comment in the thread
 CREATE PROCEDURE GetMainPosts 
 AS
 	DECLARE @ReturnCode INT
 	SET		@ReturnCode = 1
 
-	SELECT * FROM Post WHERE MainPost = 1
-	
+	-- Get all main posts order by the most recent comment in the main post thread
+	SELECT * FROM Post A INNER JOIN (SELECT MainPostReference, MAX(PostDate) AS 'PostDate' FROM Post GROUP BY MainPostReference) B
+	ON A.MainPostReference = B.MainPostReference
+	WHERE MainPost = 1
+	ORDER BY B.PostDate DESC 
+
 	IF @@ERROR = 0
 		SET @ReturnCode = 0
 	ELSE
@@ -117,6 +122,32 @@ AS
 	RETURN @ReturnCode
 GO
 
+-- Get the thread count for each main post (for displaying in the main post forum)
+CREATE PROCEDURE GetThreadCount
+(
+	@MainPostReference	INT
+)
+AS
+	IF @MainPostReference IS NULL
+		RAISERROR('StoredProcedure - GetThreadCount - Missing Required Parameter: @MainPostReference', 16, 1)
+	ELSE
+		BEGIN
+			DECLARE @ReturnCode INT
+			SET		@ReturnCode = 1
+			
+			SELECT MainPostReference, COUNT(MainPostReference) AS 'ThreadCount' 
+			FROM Post 
+			WHERE MainPostReference = @MainPostReference
+			GROUP BY MainPostReference
+
+			IF @@ERROR = 0
+				SET @ReturnCode = 0
+			ELSE
+				RAISERROR('StoredProcedure - GetThreadCount - SELECT Error', 16, 1)
+		END
+	RETURN @ReturnCode
+GO
+				
 -- Gets all post for a given page number // Initially set for 10 posts per page
 CREATE PROCEDURE GetMainPostByPage
 (
@@ -131,8 +162,11 @@ AS
 			SET		@ReturnCode = 1
 
 			-- Where MainPost = 1 Clause -> indicates it's a main post and not a threaded post
-			SELECT * FROM Post  WHERE MainPost = 1  ORDER BY PostID
-			OFFSET @Page*10 ROWS
+			SELECT * FROM Post A INNER JOIN (SELECT MainPostReference, MAX(PostDate) AS 'PostDate' FROM Post GROUP BY MainPostReference) B
+			ON A.MainPostReference = B.MainPostReference
+			WHERE MainPost = 1
+			ORDER BY B.PostDate DESC 
+			OFFSET (@Page - 1)*10 ROWS
 			FETCH NEXT 10 ROWS ONLY
 
 			IF @@ERROR =  0
@@ -250,6 +284,13 @@ EXECUTE AddPost 'kyung4', '2019-02-18', 'Test - Second main thread post', 'Testi
 EXECUTE AddPost 'kyung4', '2019-02-18', 'Test - another thread post in first main', 'second sub post', 0, 1, 0
 EXECUTE AddPost 'kyung4', '2019-02-18', 'Subpost second main', 'second main', 0, 3, 0
 EXECUTE AddPost 'kyung4', '2019-02-18', 'Another reply in first main post', 'thread 1', 0, 1, 0		
+EXECUTE AddPost 'kyung4', '2019-03-01', 'Another reply in first main post', 'thread 1', 0, 1, 0	
+EXECUTE AddPost 'username', '2019-03-01 08:00', 'New main post title', 'text for main', 1, null, 0
+EXECUTE AddPost 'username2', '2019-03-01 08:10', 'New main post title', 'text for main', 1, null, 0
+EXECUTE AddPost 'username', '2019-03-01 08:15', 'Thread post for username2 post', 'text for thread', 0, 7, 0
+EXECUTE AddPost 'username', '2019-03-01 08:20', 'Thread post for kyung4 first post', 'text for thread', 0, 1, 0
+
+SELECT * FROM Post
 	
 EXECUTE AddImage 1, 'path1'
 EXECUTE AddImage 1, 'path2'
