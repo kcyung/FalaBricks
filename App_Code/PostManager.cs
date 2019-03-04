@@ -10,7 +10,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 {
     public class PostManager
     {
-        private string CONNECTION = "Data Source=DESKTOP-P612TBL; initial catalog=FalaBricksDB; integrated security=true";
+        private string CONNECTION = "Data Source=(LocalDb)\\MSSQLLocalDB; initial catalog=FalaBrickDB; integrated security=true";
 
         private SqlConnection Connection(string name)
         {
@@ -351,7 +351,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
                 DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
                 IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
                 MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
-                ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
+                ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImages"));
 
                 Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
                     DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);

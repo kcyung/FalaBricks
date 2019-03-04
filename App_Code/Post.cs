@@ -39,10 +39,13 @@ namespace FalaBricks.LegoSystem.Domain
         }
 
         // Methods
+        /*
         public int GetThreadCount()
         {
             PostManager Manager = new PostManager();
             return Manager.GetThreadCount(MainPostReferenceID);
         }
+        */
+        
     }
 }
