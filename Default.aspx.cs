@@ -71,7 +71,7 @@ namespace FalaBricks.LegoSystem.UI
 
             //Create the downvote control
             CheckBox Downvote = new CheckBox();
-            Downvote.ID = post.PostID.ToString() + "uv";
+            Downvote.ID = post.PostID.ToString() + "dv";
             Downvote.CssClass = "PostDownvote";
             Downvote.Text = "downvote";
             PostDiv.Controls.Add(Downvote);
@@ -128,6 +128,11 @@ namespace FalaBricks.LegoSystem.UI
             }
 
             return PostDiv;
+        }
+
+        protected void TestButton_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/testpage.aspx");
         }
     }
 }

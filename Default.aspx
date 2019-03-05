@@ -15,6 +15,8 @@
             <asp:Button ID="Button3" runat="server" Text="save" CssClass="PostSave"/>
         </div>
             --%>
+
     </div>
+    <asp:Button runat="server" Text="TestButton" ID="TestButton" OnClick="TestButton_Click" />
 </asp:Content>
 
