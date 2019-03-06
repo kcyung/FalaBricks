@@ -10,7 +10,7 @@ namespace FalaBricks.LegoSystem.Domain
     {
         // Adds a post to the database
         public bool CreatePost(string userName, DateTime postDate, string title, string postText,
-            bool isMain, int mainReferencePostID, bool ContainsImage)
+            bool isMain, int? mainReferencePostID, bool ContainsImage)
         {
             PostManager Manager = new PostManager();
             bool Success = Manager.AddPost(userName, postDate, title, postText,
@@ -41,7 +41,7 @@ namespace FalaBricks.LegoSystem.Domain
         }
 
         // Gets all the images associated with one post from the database
-        public List<Image> FindImagesByPostID(int postID)
+        public List<ImagePic> FindImagesByPostID(int postID)
         {
             PostManager Manager = new PostManager();
             return Manager.GetImagesByPostID(postID);
@@ -68,6 +68,12 @@ namespace FalaBricks.LegoSystem.Domain
             PostManager Manager = new PostManager();
             bool Success = Manager.UpdateDownvoteCounter(postID, upCount);
             return Success;
+        }
+
+        public int GetThreadCount(int mainPostReferenceID)
+        {
+            PostManager Manager = new PostManager();
+            return Manager.GetThreadCount(mainPostReferenceID);
         }
     }
 }

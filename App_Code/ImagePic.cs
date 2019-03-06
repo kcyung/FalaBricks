@@ -5,13 +5,13 @@ using System.Web;
 
 namespace FalaBricks.LegoSystem.Domain
 {
-    public class Image
+    public class ImagePic
     {
         public int ImageID { get; set; }
         public int PostID { get; set; }
         public string ImagePath { get; set; }
 
-        public Image(int imageID, int postID, string imagePath)
+        public ImagePic(int imageID, int postID, string imagePath)
         {
             ImageID = imageID;
             PostID = postID;

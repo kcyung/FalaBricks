@@ -30,6 +30,7 @@ CREATE TABLE Images
 	ImagePath	VARCHAR(500) NOT NULL
 )
 
+GO
 -- Add a new post to the database
 CREATE PROCEDURE AddPost
 (
@@ -71,7 +72,7 @@ AS
 				SET @ReturnCode = 0
 			ELSE 
 				RAISERROR('StoredProcedure - AddPost - INSERT Error', 16, 1)
-		ENDs
+		END
 	RETURN @ReturnCode
 GO				
 

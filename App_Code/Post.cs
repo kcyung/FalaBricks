@@ -16,14 +16,14 @@ namespace FalaBricks.LegoSystem.Domain
         public int UpCount { get; set; }
         public int DownCount { get; set; }
         public bool IsAMainPost { get; set; }
-        public int MainPostReferenceID { get; set; }
+        public int? MainPostReferenceID { get; set; }
         public bool ContainsImage { get; set; }
 
-        public List<Image> PostImages { get; set; }
+        public List<ImagePic> PostImages { get; set; }
 
         public Post(int postID, string userName, DateTime postDate, string title,
             string postText, int upCount, int downCount, bool isAMainPost,
-            int mainPostReferenceID, bool containsImage)
+            int? mainPostReferenceID, bool containsImage)
         {
             PostID = postID;
             UserName = userName;
@@ -37,15 +37,5 @@ namespace FalaBricks.LegoSystem.Domain
             ContainsImage = containsImage;
             PostImages = null;
         }
-
-        // Methods
-        /*
-        public int GetThreadCount()
-        {
-            PostManager Manager = new PostManager();
-            return Manager.GetThreadCount(MainPostReferenceID);
-        }
-        */
-        
     }
 }

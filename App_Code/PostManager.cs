@@ -10,7 +10,9 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 {
     public class PostManager
     {
-        private string CONNECTION = "Data Source=(LocalDb)\\MSSQLLocalDB; initial catalog=FalaBrickDB; integrated security=true";
+        private const string LAB = "Data Source=(LocalDb)\\MSSQLLocalDB; initial catalog=FalaBrickDB; integrated security=true";
+        private const string HOME = "Data Source=DESKTOP-P612TBL; initial catalog = FalaBrickDB; integrated security = true";
+        public string CONNECTION = HOME;
 
         private SqlConnection Connection(string name)
         {
@@ -39,7 +41,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 
         /* STORED PROCEDURES */
         public bool AddPost(string userName, DateTime postDate, string title, string postText,
-            bool isMain, int mainReferencePostID, bool ContainsImage)
+            bool isMain, int? mainReferencePostID, bool ContainsImage)
         {
             SqlConnection connection = Connection(CONNECTION);
             SqlCommand AddPostCommand = StoredProcedureCommand("AddPost", connection);
@@ -48,7 +50,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             UserNameParameter.Value = userName;
 
             SqlParameter PostDateParameter = InputParameter("@PostDate", SqlDbType.DateTime);
-            UserNameParameter.Value = postDate;
+            PostDateParameter.Value = postDate;
 
             SqlParameter TitleParameter = InputParameter("@Title", SqlDbType.VarChar);
             TitleParameter.Value = title;
@@ -59,10 +61,19 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             SqlParameter IsAMainPostParameter = InputParameter("@MainPost", SqlDbType.Bit);
             IsAMainPostParameter.Value = isMain ? 1 : 0;
 
-            SqlParameter MainPostReferenceIDParameter = InputParameter("MainPostReference", SqlDbType.Int);
-            MainPostReferenceIDParameter.Value = mainReferencePostID;
+            SqlParameter MainPostReferenceIDParameter;
+            if (mainReferencePostID == null)
+            {
+                MainPostReferenceIDParameter = InputParameter("@MainPostReference", SqlDbType.Int);
+                MainPostReferenceIDParameter.Value = DBNull.Value;
+            }
+            else
+            {
+                MainPostReferenceIDParameter = InputParameter("@MainPostReference", SqlDbType.Int);
+                MainPostReferenceIDParameter.Value = mainReferencePostID;
+            }
 
-            SqlParameter ContainsImageParameter = InputParameter("ContainsImage", SqlDbType.Bit);
+            SqlParameter ContainsImageParameter = InputParameter("@ContainsImage", SqlDbType.Bit);
             ContainsImageParameter.Value = ContainsImage ? 1 : 0;
 
             AddPostCommand.Parameters.Add(UserNameParameter);
@@ -79,7 +90,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 
             connection.Close();
 
-            if (rowsAffected == 1)
+            if (isMain && rowsAffected == 2 || !isMain && rowsAffected == 1)
                 return true;
             return false;
         }
@@ -116,39 +127,10 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 
             SqlDataReader reader;
             List<Post> MainPostList = new List<Post>();
-            //int postID = 0;
-            //string UserName = null;
-            //DateTime PostDate;
-            //string Title = null;
-            //string PostText = null;
-            //int UpCount = 0;
-            //int DownCount = 0;
-            //bool IsAMainPost = false;
-            //int MainPostReferenceID = 0;
-            //bool ContainsImage = false;
 
             connection.Open();
-
             reader = GetMainPostCommand.ExecuteReader();
-
             MainPostList = GetPostFromReader(reader);
-            //while (reader.Read())
-            //{
-            //    postID = reader.GetInt32(reader.GetOrdinal("postID"));
-            //    UserName = reader["UserName"].ToString();
-            //    PostDate = reader.GetDateTime(reader.GetOrdinal("PostDate"));
-            //    Title = reader["Title"].ToString();
-            //    PostText = reader["PostText"].ToString();
-            //    UpCount = reader.GetInt32(reader.GetOrdinal("UpCount"));
-            //    DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
-            //    IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
-            //    MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
-            //    ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
-
-            //    Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
-            //        DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);
-            //    MainPostList.Add(newPost);
-            //}
             connection.Close();
 
             return MainPostList;
@@ -166,45 +148,15 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 
             SqlDataReader reader;
             List<Post> MainPostList = new List<Post>();
-            //int postID = 0;
-            //string UserName = null;
-            //DateTime PostDate;
-            //string Title = null;
-            //string PostText = null;
-            //int UpCount = 0;
-            //int DownCount = 0;
-            //bool IsAMainPost = false;
-            //int MainPostReferenceID = 0;
-            //bool ContainsImage = false;
-
             connection.Open();
-
             reader = GetMainPostByPageCommand.ExecuteReader();
-
             MainPostList = GetPostFromReader(reader);
-            //while (reader.Read())
-            //{
-            //    postID = reader.GetInt32(reader.GetOrdinal("postID"));
-            //    UserName = reader["UserName"].ToString();
-            //    PostDate = reader.GetDateTime(reader.GetOrdinal("PostDate"));
-            //    Title = reader["Title"].ToString();
-            //    PostText = reader["PostText"].ToString();
-            //    UpCount = reader.GetInt32(reader.GetOrdinal("UpCount"));
-            //    DownCount = reader.GetInt32(reader.GetOrdinal("DownCount"));
-            //    IsAMainPost = reader.GetBoolean(reader.GetOrdinal("MainPost"));
-            //    MainPostReferenceID = reader.GetInt32(reader.GetOrdinal("MainPostReference"));
-            //    ContainsImage = reader.GetBoolean(reader.GetOrdinal("ContainsImage"));
-
-            //    Post newPost = new Post(postID, UserName, PostDate, Title, PostText, UpCount,
-            //        DownCount, IsAMainPost, MainPostReferenceID, ContainsImage);
-            //    MainPostList.Add(newPost);
-            //}
             connection.Close();
 
             return MainPostList;
         }
 
-        public List<Image> GetImagesByPostID(int postID)
+        public List<ImagePic> GetImagesByPostID(int postID)
         {
             SqlConnection connection = Connection(CONNECTION);
             SqlCommand GetImagesByPostIDCommand = StoredProcedureCommand("GetImagesByPostID", connection);
@@ -215,7 +167,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             GetImagesByPostIDCommand.Parameters.Add(PostIDParameter);
 
             SqlDataReader reader;
-            List<Image> ImagesInPost = new List<Image>();
+            List<ImagePic> ImagesInPost = new List<ImagePic>();
             int imageID = 0;
             int postIDForImage = 0;
             string imagePath = null;
@@ -230,7 +182,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
                 postIDForImage = reader.GetInt32(reader.GetOrdinal("PostID"));
                 imagePath = reader["ImagePath"].ToString();
 
-                ImagesInPost.Add(new Image(imageID, postIDForImage, imagePath));
+                ImagesInPost.Add(new ImagePic(imageID, postIDForImage, imagePath));
             }
 
             connection.Close();
@@ -306,13 +258,14 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             return rowsAffected.Equals(1);
         }
 
+        // Show the number of thread posts for each post in the main forum
         public int GetThreadCount(int mainPostReference)
         {
             SqlConnection connection = Connection(CONNECTION);
             SqlCommand GetThreadCountCommand = StoredProcedureCommand("GetThreadCount", connection);
 
-            SqlParameter MainPostReferenceParameter = InputParameter("MainPostReference", SqlDbType.Int);
-            MainPostReferenceParameter.Value = MainPostReferenceParameter;
+            SqlParameter MainPostReferenceParameter = InputParameter("@MainPostReference", SqlDbType.Int);
+            MainPostReferenceParameter.Value = mainPostReference;
 
             GetThreadCountCommand.Parameters.Add(MainPostReferenceParameter);
 
@@ -321,7 +274,8 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 
             connection.Open();
             reader = GetThreadCountCommand.ExecuteReader();
-            ThreadCount = reader.GetInt32(reader.GetOrdinal("ThreadCount"));
+            reader.Read();
+            ThreadCount = reader.GetInt32(1);
             connection.Close();
             return ThreadCount;
         }
