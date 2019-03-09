@@ -69,5 +69,41 @@ namespace FalaBricks.LegoSystem.UI
             //Controller.ModifyDownCount(1, 5);
             //Controller.ModifyUpCount(1, 8);
         }
+
+
+        // This is how we store images locally
+        protected void Test_Click(object sender, EventArgs e)
+        {
+            if (!UI_FUL_Image.HasFiles)
+            {
+                Response.Write("No file selected");
+                return;
+            }
+
+            int PostID = 3;
+
+            if (UI_FUL_Image.HasFiles)
+            {
+                string path = @"~/Images/PostID" + PostID.ToString() + @"/";
+                if (!System.IO.Directory.Exists(Server.MapPath(@"~/Images/PostID" + PostID.ToString() + @"/")))
+                {
+                    System.IO.Directory.CreateDirectory(Server.MapPath(path));
+                }
+
+                UI_FUL_Image.SaveAs(Server.MapPath(path + UI_FUL_Image.FileName));
+                LS Controller = new LS();
+
+                bool Confirmation = Controller.AddImage(PostID, path + UI_FUL_Image.FileName);
+                Response.Write(Confirmation);
+            }
+        }
+
+        // THis is how we retrieve an image and display it back into a button
+        protected void GetImageTest_Click(object sender, EventArgs e)
+        {
+            LS Controller = new LS();
+            List<ImagePic> imageList = Controller.FindImagesByPostID(3);
+            UI_ImgBtn_Test.ImageUrl = imageList.Last().ImagePath;
+        }
     }
 }
