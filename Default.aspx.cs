@@ -56,6 +56,8 @@ namespace FalaBricks.LegoSystem.UI
         /// <returns></returns>
         private HtmlGenericControl CreatePost(Post post)
         {
+            //Create the controller;
+            LS Controller = new LS();
             //Create the Div
             HtmlGenericControl PostDiv = new HtmlGenericControl("div");
             PostDiv.ID = post.PostID.ToString();
@@ -103,6 +105,7 @@ namespace FalaBricks.LegoSystem.UI
             Label CommentCountLbl = new Label();
             CommentCountLbl.ID = post.PostID.ToString() + "cc";
             CommentCountLbl.CssClass = "PostCommentCount";
+            CommentCountLbl.Text = Controller.GetThreadCount((int)post.MainPostReferenceID) + "";
             PostDiv.Controls.Add(CommentCountLbl);
 
             //Create the Post date Lbl
@@ -129,16 +132,24 @@ namespace FalaBricks.LegoSystem.UI
                 ImageDiv.Attributes["style"] = "margin: 0 auto;";
 
                 //Create the anchor that holds the img acts as a hyperlink
+                /*
                 HtmlAnchor anchor = new HtmlAnchor();
                 anchor.HRef = "default.aspx"; //This can be changed later to be dynamic;
+                */
 
                 //Create the image
+                ImageButton img = new ImageButton();
+                img.CommandArgument = post.PostID.ToString();
+                img.Attributes["width"] = "150px";
+                img.Attributes["height"] = "150px";
+                img.ImageUrl = "image/img150.png"; ;
+                /*
                 System.Web.UI.WebControls.Image PostImage = new System.Web.UI.WebControls.Image();
                 PostImage.ImageUrl = "image/img150.png"; //Link the image to file
-
+                */
                 //Add the image to the anchor which is added to the div
-                anchor.Controls.Add(PostImage);
-                ImageDiv.Controls.Add(anchor);
+                //anchor.Controls.Add(PostImage);
+                ImageDiv.Controls.Add(img);
                 PostDiv.Controls.Add(ImageDiv);
             }
 
