@@ -12,7 +12,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
     {
         private const string LAB = "Data Source=(LocalDb)\\MSSQLLocalDB; initial catalog=FalaBrickDB; integrated security=true";
         private const string HOME = "Data Source=DESKTOP-P612TBL; initial catalog = FalaBricksDB; integrated security = true";
-        public string CONNECTION = HOME;
+        public string CONNECTION = LAB;
 
         private SqlConnection Connection(string name)
         {
