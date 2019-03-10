@@ -60,33 +60,34 @@ namespace FalaBricks.LegoSystem.UI
             HtmlGenericControl PostDiv = new HtmlGenericControl("div");
             PostDiv.ID = post.PostID.ToString();
             PostDiv.Attributes["class"] = "PostContainer";
-            PostDiv.Attributes["style"] = "margin: 0 auto;  margin-bottom:15px; border-style: solid; border-width: 1px;";
+            PostDiv.Attributes["style"] = "margin: 0 auto;  margin-bottom:15px; background-color:#464749; border-radius: 10px;  ";
 
             //Create the upvote control
-            CheckBox Upvote = new CheckBox();
+            ImageButton Upvote = new ImageButton();
             Upvote.ID = post.PostID.ToString() + "uv";
             Upvote.CssClass = "PostUpvote";
-            Upvote.Text = "upvote";
+            Upvote.ImageUrl = "image/upvote.png";
             PostDiv.Controls.Add(Upvote);
 
             //Create the downvote control
-            CheckBox Downvote = new CheckBox();
+            ImageButton Downvote = new ImageButton();
             Downvote.ID = post.PostID.ToString() + "dv";
             Downvote.CssClass = "PostDownvote";
-            Downvote.Text = "downvote";
+            Downvote.ImageUrl = "image/downvote.png";
             PostDiv.Controls.Add(Downvote);
 
             //Create the Vote count Label
             Label VotecountLbl = new Label();
             VotecountLbl.ID = post.PostID.ToString() + "vc";
             VotecountLbl.CssClass = "PostVoteCount";
+            VotecountLbl.Text = (post.UpCount - post.DownCount) + "";
             PostDiv.Controls.Add(VotecountLbl);
 
             //Create the Title Label(Will be hyperlink in the future)
             Label TitleLbl = new Label();
             TitleLbl.ID = post.PostID.ToString() + "tl";
             TitleLbl.Font.Size = 20;
-            TitleLbl.Text = post.PostText;
+            TitleLbl.Text = post.Title;
             if (post.ContainsImage)
             {
                 TitleLbl.CssClass = "PostTitlewImage"; 
@@ -121,10 +122,24 @@ namespace FalaBricks.LegoSystem.UI
             //Create Image if it contains image
             if (post.ContainsImage)
             {
+                //Create the div that holds the anchor
+                HtmlGenericControl ImageDiv = new HtmlGenericControl("div");
+                ImageDiv.ID = post.PostID.ToString() + "ic";
+                ImageDiv.Attributes["class"] = "ImageDivPreview";
+                ImageDiv.Attributes["style"] = "margin: 0 auto;";
+
+                //Create the anchor that holds the img acts as a hyperlink
+                HtmlAnchor anchor = new HtmlAnchor();
+                anchor.HRef = "default.aspx"; //This can be changed later to be dynamic;
+
+                //Create the image
                 System.Web.UI.WebControls.Image PostImage = new System.Web.UI.WebControls.Image();
-                PostImage.ImageUrl = "image/img150.png";
-                PostImage.CssClass = "PostImage";
-                PostDiv.Controls.Add(PostImage);
+                PostImage.ImageUrl = "image/img150.png"; //Link the image to file
+
+                //Add the image to the anchor which is added to the div
+                anchor.Controls.Add(PostImage);
+                ImageDiv.Controls.Add(anchor);
+                PostDiv.Controls.Add(ImageDiv);
             }
 
             return PostDiv;
