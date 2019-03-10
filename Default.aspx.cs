@@ -142,7 +142,8 @@ namespace FalaBricks.LegoSystem.UI
                 img.CommandArgument = post.PostID.ToString();
                 img.Attributes["width"] = "150px";
                 img.Attributes["height"] = "150px";
-                img.ImageUrl = "image/img150.png"; ;
+                post.PostImages = Controller.FindImagesByPostID(post.PostID);
+                img.ImageUrl = post.PostImages[0].ImagePath;//"image/img150.png";
                 /*
                 System.Web.UI.WebControls.Image PostImage = new System.Web.UI.WebControls.Image();
                 PostImage.ImageUrl = "image/img150.png"; //Link the image to file

@@ -11,8 +11,8 @@ namespace FalaBricks.LegoSystem.TechnicalServices
     public class PostManager
     {
         private const string LAB = "Data Source=(LocalDb)\\MSSQLLocalDB; initial catalog=FalaBrickDB; integrated security=true";
-        private const string HOME = "Data Source=DESKTOP-P612TBL; initial catalog = FalaBrickDB; integrated security = true";
-        public string CONNECTION = LAB;
+        private const string HOME = "Data Source=DESKTOP-P612TBL; initial catalog = FalaBricksDB; integrated security = true";
+        public string CONNECTION = HOME;
 
         private SqlConnection Connection(string name)
         {
