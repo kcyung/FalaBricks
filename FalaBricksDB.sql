@@ -33,7 +33,8 @@ CREATE PROCEDURE AddPost
 	@PostText	VARCHAR(5000) NULL,
 	@MainPost	BIT,  -- 0 Is a Thread Post, 1 is a Main Post
 	@MainPostReference INT NULL,
-	@ContainsImage		BIT
+	@ContainsImage		BIT,
+	@PostID as int output
 )
 AS
 	IF @UserName IS NULL
@@ -58,6 +59,7 @@ AS
 				BEGIN 
 					INSERT INTO Post (UserName, PostDate, Title, PostText, UpCount, DownCount, MainPost, ContainsImages) VALUES 
 								 (@UserName, @PostDate, @Title, @PostText, 0, 0, @MainPost, @ContainsImage)
+					Set @PostID = SCOPE_IDENTITY()
 					UPDATE POST SET MainPostReference = (@@IDENTITY) WHERE PostID = @@IDENTITY
 				END
 

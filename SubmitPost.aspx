@@ -6,17 +6,35 @@
     <br />
     <br />
     <br />
-    <div class="SubmitContainer">
-        <asp:Button ID="TextSelectionBtn" runat="server" Text="Text" CssClass="btn-group-lg btn SubmitButtonLeft btn-secondary"/> 
-        <asp:Button ID="ImageSelectionBtn" runat="server" Text="Image" CssClass="btn-group-lg btn SubmitButtonMiddle btn-secondary" />
-        <asp:Button ID="LinkSelectionBtn" runat="server" Text="Link" CssClass="btn-group-lg btn SubmitButtonRight btn-secondary"/>
-        
-        <asp:TextBox ID="TitleTB" runat="server" CssClass="SubmitTitleTB RoundTB" BackColor="#81878e" ForeColor="White" Width="100%" placeholder="Title"></asp:TextBox>
-        <asp:MultiView ID="SubmitMV" runat="server" ActiveViewIndex="0">
-            <asp:View ID="TextView" runat="server">
-                <asp:TextBox ID="TextTB" runat="server" CssClass="RoundTB SubmitContent" BackColor="#81878e" ForeColor="White" Width="100%" TextMode="MultiLine" placeholder="Text"></asp:TextBox>
-            </asp:View>
-        </asp:MultiView>
-    </div>
+    <div class="SubmitBG">
+        <div class="btn-group-lg ButtonRow">
+            <asp:Button ID="TextSelectBtn" CssClass="btn-group-lg btn btn-secondary ThirdOfButton"  runat="server" Text="Text" OnClick="TextSelectBtn_Click" />
+            <asp:Button ID="ImageSelectBtn" CssClass="btn-group-lg btn btn-secondary ThirdOfButton"  runat="server" Text="Image" OnClick="ImageSelectBtn_Click" />
+            <asp:Button ID="LinkSelectBtn" CssClass="btn-group-lg btn btn-secondary ThirdOfButton"  runat="server" Text="Link" OnClick="LinkSelectBtn_Click" />
+        </div>
+        <hr  style="color:whitesmoke"/>
+        <div class="SubmitDiv">
+            <asp:TextBox ID="TitleTB" runat="server" Placeholder="Title" ForeColor="WhiteSmoke" BackColor="#787d87" CssClass="SubmitTitle"></asp:TextBox>
+        </div>
+        <hr  style="color:whitesmoke"/>
+        <div class="SubmitDiv">
+            <asp:MultiView ID="SubmitMV" runat="server" ActiveViewIndex="0">
+                <asp:View ID="TextView" runat="server">
+                    <asp:TextBox ID="ContentTextTB" runat="server" Placeholder="Text(Optional)" ForeColor="WhiteSmoke" BackColor="#787d87" CssClass="SubmitContent" TextMode="MultiLine" Rows="5">
+                    </asp:TextBox>
+                </asp:View>
+                <asp:View ID="ImageView" runat="server">
+                    <asp:FileUpload ID="ImageFU" Accept=".png,.jpg,.jpeg,.gif" Text="Choose an image" runat="server" CssClass="SubmitContent" />
+                </asp:View>
+                <asp:View ID="LinkView" runat="server">
+                    <asp:TextBox ID="LinkTextTB" runat="server" ForeColor="WhiteSmoke" BackColor="#787d87" CssClass="SubmitContent" TextMode="Url">
+                    </asp:TextBox>
+                </asp:View>
+            </asp:MultiView>
+        </div>
+        <hr  style="color:whitesmoke"/>
+        <asp:Button ID="SubmitBtn" runat="server" Text="Post" CssClass="btn-dark btn ThirdOfButton" OnClick="SubmitBtn_Click" />
+
+     </div>
 </asp:Content>
 

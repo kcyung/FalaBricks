@@ -9,13 +9,13 @@ namespace FalaBricks.LegoSystem.Domain
     public class LS
     {
         // Adds a post to the database
-        public bool CreatePost(string userName, DateTime postDate, string title, string postText,
+        public int CreatePost(string userName, DateTime postDate, string title, string postText,
             bool isMain, int? mainReferencePostID, bool ContainsImage)
         {
             PostManager Manager = new PostManager();
-            bool Success = Manager.AddPost(userName, postDate, title, postText,
+            int PostID = Manager.AddPost(userName, postDate, title, postText,
                     isMain, mainReferencePostID, ContainsImage);
-            return Success;
+            return PostID;
         }
 
         // Adds an image to the database

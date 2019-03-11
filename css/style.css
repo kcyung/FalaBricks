@@ -83,57 +83,70 @@ img
     grid-row: 2/3;
 }
 
-.SubmitContainer {
-    width: 600px;
-    height: 550px;
+.ButtonRow {
+    width: 620px;
+    height: 70px;
+    padding: 10px;
+}
+
+.SubmitBG 
+{
+    width: 610px;
+    height: auto;
+    padding: 10px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 50px 50px 400px 50px;
-    padding: 5px;
-    grid-gap: 10px;
-    background-color: #515356;
-    border-radius: 5px;
+    background-color: #4e5156;
 }
 
-.SubmitButtonLeft
+.SubmitDiv
 {
-    grid-column: 1/2;
-    grid-row: 1/2;
-}
-
-.SubmitButtonMiddle 
-{
-    grid-column: 2/3;
-    grid-row: 1/2;
-}
-
-.SubmitButtonRight 
-{
-    grid-column: 3/4;
-    grid-row: 1/2;
-}
-
-.SubmitTitleTB
-{
-    grid-column: 1/4;
-    grid-row: 2/3;
+    width: 580px;
     margin: 0 auto;
 }
 
-.SubmitContent
+.SubmitTitle 
 {
-    grid-column: 1/4;
-    grid-row: 3/4;
-    margin: 0 auto;
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 7px;
 }
 
-.RoundTB {
+.SubmitContent {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 7px;
+}
+
+.ThirdOfButton
+{
+    width: 31%;
+}
+
+.RoundTB 
+{
     display: inline-block;
     border-radius: 5px;
     padding-left: 10px;
     padding-right: 10px;
 }
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #d5d9e2;
+    opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #d5d9e2;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+    color: #d5d9e2;
+}
+
 
 
 

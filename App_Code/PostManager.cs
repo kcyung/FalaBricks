@@ -10,7 +10,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
 {
     public class PostManager
     {
-        private const string LAB = "Data Source=(LocalDb)\\MSSQLLocalDB; initial catalog=FalaBrickDB; integrated security=true";
+        private const string LAB = "Data Source=(LocalDb)\\MSSQLLocalDB; initial catalog=FalaBricksDB; integrated security=true";
         private const string HOME = "Data Source=DESKTOP-P612TBL; initial catalog = FalaBricksDB; integrated security = true";
         public string CONNECTION = LAB;
 
@@ -40,7 +40,7 @@ namespace FalaBricks.LegoSystem.TechnicalServices
         }
 
         /* STORED PROCEDURES */
-        public bool AddPost(string userName, DateTime postDate, string title, string postText,
+        public int AddPost(string userName, DateTime postDate, string title, string postText,
             bool isMain, int? mainReferencePostID, bool ContainsImage)
         {
             SqlConnection connection = Connection(CONNECTION);
@@ -61,6 +61,12 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             SqlParameter IsAMainPostParameter = InputParameter("@MainPost", SqlDbType.Bit);
             IsAMainPostParameter.Value = isMain ? 1 : 0;
 
+            SqlParameter PostIDParameter = new SqlParameter();
+            PostIDParameter.Direction = ParameterDirection.Output;
+            PostIDParameter.ParameterName = "@PostID";
+            PostIDParameter.SqlDbType = SqlDbType.Int;
+
+        
             SqlParameter MainPostReferenceIDParameter;
             if (mainReferencePostID == null)
             {
@@ -83,16 +89,14 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             AddPostCommand.Parameters.Add(IsAMainPostParameter);
             AddPostCommand.Parameters.Add(MainPostReferenceIDParameter);
             AddPostCommand.Parameters.Add(ContainsImageParameter);
-
+            AddPostCommand.Parameters.Add(PostIDParameter);
             connection.Open();
 
             int rowsAffected = AddPostCommand.ExecuteNonQuery();
-
+            int PostID = (int)AddPostCommand.Parameters["@PostID"].Value;
             connection.Close();
 
-            if (isMain && rowsAffected == 2 || !isMain && rowsAffected == 1)
-                return true;
-            return false;
+            return PostID;
         }
 
         public bool AddImage(int postID, string imagePath)

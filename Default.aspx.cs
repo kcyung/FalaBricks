@@ -82,6 +82,7 @@ namespace FalaBricks.LegoSystem.UI
             Label VotecountLbl = new Label();
             VotecountLbl.ID = post.PostID.ToString() + "vc";
             VotecountLbl.CssClass = "PostVoteCount";
+            VotecountLbl.ForeColor = System.Drawing.Color.WhiteSmoke;
             VotecountLbl.Text = (post.UpCount - post.DownCount) + "";
             PostDiv.Controls.Add(VotecountLbl);
 
@@ -89,6 +90,7 @@ namespace FalaBricks.LegoSystem.UI
             Label TitleLbl = new Label();
             TitleLbl.ID = post.PostID.ToString() + "tl";
             TitleLbl.Font.Size = 20;
+            TitleLbl.ForeColor = System.Drawing.Color.WhiteSmoke;
             TitleLbl.Text = post.Title;
             if (post.ContainsImage)
             {
@@ -105,6 +107,7 @@ namespace FalaBricks.LegoSystem.UI
             Label CommentCountLbl = new Label();
             CommentCountLbl.ID = post.PostID.ToString() + "cc";
             CommentCountLbl.CssClass = "PostCommentCount";
+            CommentCountLbl.ForeColor = System.Drawing.Color.WhiteSmoke;
             CommentCountLbl.Text = "Comments: " + Controller.GetThreadCount((int)post.MainPostReferenceID) + "";
             PostDiv.Controls.Add(CommentCountLbl);
 
@@ -112,6 +115,7 @@ namespace FalaBricks.LegoSystem.UI
             Label PostDateLbl = new Label();
             PostDateLbl.ID = post.PostID.ToString() + "pd";
             PostDateLbl.CssClass = "PostDate";
+            PostDateLbl.ForeColor = System.Drawing.Color.WhiteSmoke;
             PostDateLbl.Text = post.PostDate.ToLongDateString();
             PostDiv.Controls.Add(PostDateLbl);
 
@@ -119,6 +123,7 @@ namespace FalaBricks.LegoSystem.UI
             Label PostByLbl = new Label();
             PostByLbl.ID = post.PostID.ToString() + "pb";
             PostByLbl.CssClass = "PostUser";
+            PostByLbl.ForeColor = System.Drawing.Color.WhiteSmoke;
             PostByLbl.Text = "Submitted By: " + post.UserName;
             PostDiv.Controls.Add(PostByLbl);
 
