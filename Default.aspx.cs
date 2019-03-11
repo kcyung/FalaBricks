@@ -105,7 +105,7 @@ namespace FalaBricks.LegoSystem.UI
             Label CommentCountLbl = new Label();
             CommentCountLbl.ID = post.PostID.ToString() + "cc";
             CommentCountLbl.CssClass = "PostCommentCount";
-            CommentCountLbl.Text = Controller.GetThreadCount((int)post.MainPostReferenceID) + "";
+            CommentCountLbl.Text = "Comments: " + Controller.GetThreadCount((int)post.MainPostReferenceID) + "";
             PostDiv.Controls.Add(CommentCountLbl);
 
             //Create the Post date Lbl

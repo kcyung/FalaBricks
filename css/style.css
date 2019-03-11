@@ -83,15 +83,60 @@ img
     grid-row: 2/3;
 }
 
-.SubmitContainer 
-{
-    width: 80%;
-    height: 500px;
+.SubmitContainer {
+    width: 600px;
+    height: 550px;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 50px 450px ;
+    grid-template-rows: 50px 50px 400px 50px;
     padding: 5px;
+    grid-gap: 10px;
+    background-color: #515356;
+    border-radius: 5px;
 }
+
+.SubmitButtonLeft
+{
+    grid-column: 1/2;
+    grid-row: 1/2;
+}
+
+.SubmitButtonMiddle 
+{
+    grid-column: 2/3;
+    grid-row: 1/2;
+}
+
+.SubmitButtonRight 
+{
+    grid-column: 3/4;
+    grid-row: 1/2;
+}
+
+.SubmitTitleTB
+{
+    grid-column: 1/4;
+    grid-row: 2/3;
+    margin: 0 auto;
+}
+
+.SubmitContent
+{
+    grid-column: 1/4;
+    grid-row: 3/4;
+    margin: 0 auto;
+}
+
+.RoundTB {
+    display: inline-block;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+
 
 
 
