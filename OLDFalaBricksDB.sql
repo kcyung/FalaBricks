@@ -1,6 +1,11 @@
-CREATE DATABASE FalaBricksDB
+CREATE DATABASE FalaBrickDB
 
-USE FalaBricksDB
+USE FalaBrickDB
+
+-- Table for Posts on Main Forum
+DROP TABLE Images
+DROP TABLE Post
+DROP PROCEDURE AddPost
 
 CREATE TABLE Post
 (
@@ -13,7 +18,9 @@ CREATE TABLE Post
 	DownCount			INT	DEFAULT 0,
 	MainPost			BIT NOT NULL,			-- 0 is a thread post, 1 is a post for the main page
 	MainPostReference	INT	FOREIGN KEY REFERENCES Post(PostID), -- Used for thread posts to pull from same main forum idea
-	ContainsImages		BIT	NOT NULL			-- 0 is False, 1 is True		
+	ContainsImages		BIT	NOT NULL,			-- 0 is False, 1 is True		
+
+	CONSTRAINT CHK_ImageOrText CHECK (ContainsImages = 1 OR PostText IS NOT NULL)
 )
 
 CREATE TABLE Images
@@ -141,7 +148,7 @@ AS
 		END
 	RETURN @ReturnCode
 GO
-
+				
 -- Gets all post for a given page number // Initially set for 10 posts per page
 CREATE PROCEDURE GetMainPostByPage
 (
@@ -270,26 +277,32 @@ AS
 		END
 	RETURN @ReturnCode
 GO	
-SELECT * FROM Images
+EXECUTE UpdateDownCounter 1, 1
 SELECT * FROM Post
-EXECUTE AddPost 'kyung4', '2019-03-10 11:00:00', 'My first lego idea', 'What do you think of my idea?', 1, null, 1  
-EXECUTE AddImage 1, '~/Images/PostID1/Concept.jpg'
+EXECUTE AddPost 'kyung4', '2019-02-18', 'Main', 'Testing main post reference', 1, null, 1
+EXECUTE AddPost 'kyung4', '2019-02-18', 'Test - first subpost in thread', 'Testing first thread post', 0, 1, 1
+EXECUTE AddPost 'kyung4', '2019-02-18', 'Test - Second main thread post', 'Testing second main post', 1, null, 1
+EXECUTE AddPost 'kyung4', '2019-02-18', 'Test - another thread post in first main', 'second sub post', 0, 1, 0
+EXECUTE AddPost 'kyung4', '2019-02-18', 'Subpost second main', 'second main', 0, 3, 0
+EXECUTE AddPost 'kyung4', '2019-02-18', 'Another reply in first main post', 'thread 1', 0, 1, 0		
+EXECUTE AddPost 'kyung4', '2019-03-01', 'Another reply in first main post', 'thread 1', 0, 1, 0	
+EXECUTE AddPost 'username', '2019-03-01 08:00', 'New main post title', 'text for main', 1, null, 0
+EXECUTE AddPost 'username2', '2019-03-01 08:10', 'New main post title', 'text for main', 1, null, 0
+EXECUTE AddPost 'username', '2019-03-01 08:15', 'Thread post for username2 post', 'text for thread', 0, 7, 0
+EXECUTE AddPost 'username', '2019-03-01 08:20', 'Thread post for kyung4 first post', 'text for thread', 0, 1, 0
 
-EXECUTE AddPost 'kyung4', '2019-03-10 11:01:00', 'Bonsai Tree', 'Building this', 1, null, 1
-EXECUTE AddImage 2, '~/Images/PostID2/Bonsai Tree.jpg'
-
-EXECUTE AddPost 'kyung4', '2019-03-10 11:02', 'Good idea', 'Can a builder please make it?', 0, 1, 0
-
-EXECUTE AddPost 'Bob', '2019-03-10 11:03', 'I''m designing this', 'Tell me what you think', 1, null, 1
-EXECUTE AddImage 4, '~/Images/PostID4/Residential.png'
-
-EXECUTE AddPost 'Alice', '2019-03-10 11:04', 'Would anyone ever want to buy this?', 'Yes?/No?', 1, null, 1
-EXECUTE AddImage 5, '~/Images/PostID5/ResidentialHouse2.png'
-
-EXECUTE AddPost 'Mary', '2019-03-10 11:05', 'My dream home', 'I''ll pay you millions to build it', 1, null, 1
-EXECUTE AddImage 6, '~/Images/PostID6/ResidentialHouse3.png'
-
-
+SELECT * FROM Post
+	
+EXECUTE AddImage 1, 'path1'
+EXECUTE AddImage 1, 'path2'
+EXECUTE AddImage 1, 'path3'
+EXECUTE AddImage 1, 'path4'
+EXECUTE AddImage 1, 'path5'
+EXECUTE AddImage 2, 'path6'
+EXECUTE AddImage 3, 'path7'
+EXECUTE AddImage 6, 'path8'
+EXECUTE GetImagesByPostID 1
+EXECUTE GetImagesByPostID 6
 SELECT * FROM Post
 SELECT * FROM Images
 
@@ -299,9 +312,6 @@ SELECT * FROM Post INNER JOIN Images ON Post.PostID = Images.PostID WHERE Post.P
 -- Get all the posts for one thread (Missing the Main Post Itself)
 SELECT * FROM Post WHERE MainPostReference = 1 ORDER BY PostID
 
-EXECUTE GetThreadCount 1
-
-SELECT * FROM POst
 
 /** SAMPLE RUN 
 
@@ -315,6 +325,3 @@ D) SUBMITS BUTTON CLICK
 2) GET THE POSTID FROM THE LAST STATEMENT
 3) ITERATE THROUGH EACH IMAGE AND UPLOAD IT INTO THE IMAGES TABLE
 */
-SELECT * FROM POST
-SELECT * FROM Images
-
