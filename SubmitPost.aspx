@@ -24,7 +24,7 @@
                     </asp:TextBox>
                 </asp:View>
                 <asp:View ID="ImageView" runat="server">
-                    <asp:FileUpload ID="ImageFU" Accept=".png,.jpg,.jpeg,.gif" Text="Choose an image" runat="server" CssClass="SubmitContent" />
+                    <asp:FileUpload ID="ImageFU" AllowMultiple="true" Accept=".png,.jpg,.jpeg,.gif" Text="Choose an image" runat="server" CssClass="SubmitContent" />
                 </asp:View>
                 <asp:View ID="LinkView" runat="server">
                     <asp:TextBox ID="LinkTextTB" runat="server" ForeColor="WhiteSmoke" BackColor="#787d87" CssClass="SubmitContent" TextMode="Url">

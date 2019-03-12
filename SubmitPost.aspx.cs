@@ -60,28 +60,35 @@ public partial class SubmitPost : System.Web.UI.Page
         {
             Controller.CreatePost("testuser", DateTime.Now, TitleTB.Text, ContentTextTB.Text, true, null, false);
         }
+        Response.Redirect("~/Default.aspx");
     }
 
     private void SubmitNewImagePost()
     {
         LS Controller = new LS();
         int PostID = 0;
+  
         if(ImageFU.HasFiles)
         {
+            // Add the post to the db and retrieve the PostID
             PostID = Controller.CreatePost("testuser", DateTime.Now, TitleTB.Text, "", true, null, true);
 
+            // Create folder to store image for new main post
             string path = @"~/Images/PostID" + PostID.ToString() + @"/";
+
             if (!System.IO.Directory.Exists(Server.MapPath(@"~/Images/PostID" + PostID.ToString() + @"/")))
             {
                 System.IO.Directory.CreateDirectory(Server.MapPath(path));
             }
 
-            ImageFU.SaveAs(Server.MapPath(path + ImageFU.FileName));
+            // Save image locally and store file path for each image
+            foreach (HttpPostedFile file in ImageFU.PostedFiles)
+            {
+                file.SaveAs(Server.MapPath(path + file.FileName));
+                Controller.AddImage(PostID, path + file.FileName);
+            }
 
-            bool Confirmation = Controller.AddImage(PostID, path + ImageFU.FileName);
-            Response.Write(Confirmation);
-            
+            Response.Redirect("~/Default.aspx");  
         }
-
     }
 }
