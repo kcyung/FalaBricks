@@ -1,19 +1,24 @@
-CREATE DATABASE FalaBricksDB
+-- CREATE DATABASE FalaBricksDB
 
-USE FalaBricksDB
+-- USE FalaBricksDB
+
+CREATE TABLE Users
+(
+	UserName		VARCHAR(25)		PRIMARY KEY
+)
 
 CREATE TABLE Post
 (
 	PostID				INT		IDENTITY(1,1)	PRIMARY KEY,
-	UserName			VARCHAR(25)	NOT NULL,
+	UserName			VARCHAR(25)	FOREIGN KEY (UserName) REFERENCES Users(UserName),
 	PostDate			DATETIME	NOT NULL,
-	Title				VARCHAR(100)	NOT NULL,
+	Title				VARCHAR(200)	NOT NULL,
 	PostText			VARCHAR(5000),
 	UpCount				INT	DEFAULT 0,
 	DownCount			INT	DEFAULT 0,
 	MainPost			BIT NOT NULL,			-- 0 is a thread post, 1 is a post for the main page
 	MainPostReference	INT	FOREIGN KEY REFERENCES Post(PostID), -- Used for thread posts to pull from same main forum idea
-	ContainsImages		BIT	NOT NULL			-- 0 is False, 1 is True		
+	ContainsImages		BIT	NOT NULL,			-- 0 is False, 1 is True		
 )
 
 CREATE TABLE Images
@@ -23,18 +28,29 @@ CREATE TABLE Images
 	ImagePath	VARCHAR(500) NOT NULL
 )
 
-GO
+CREATE TABLE UserPostVote
+(
+	PostID		INT,
+	UserName	VARCHAR(25),
+	VoteCount	SMALLINT,
+
+	PRIMARY KEY (PostID, UserName, VoteCount),
+	FOREIGN KEY (PostID) REFERENCES Post(PostID),
+	FOREIGN KEY (UserName) REFERENCES Users(UserName)
+)
+
+-- END OF TABLES
 -- Add a new post to the database
 CREATE PROCEDURE AddPost
 (
 	@UserName	VARCHAR(25),
 	@PostDate	DATETIME,
-	@Title		VARCHAR(100),
+	@Title		VARCHAR(200),
 	@PostText	VARCHAR(5000) NULL,
 	@MainPost	BIT,  -- 0 Is a Thread Post, 1 is a Main Post
 	@MainPostReference INT NULL,
 	@ContainsImage		BIT,
-	@PostID as int output
+	@PostID AS INT OUTPUT
 )
 AS
 	IF @UserName IS NULL
@@ -59,7 +75,7 @@ AS
 				BEGIN 
 					INSERT INTO Post (UserName, PostDate, Title, PostText, UpCount, DownCount, MainPost, ContainsImages) VALUES 
 								 (@UserName, @PostDate, @Title, @PostText, 0, 0, @MainPost, @ContainsImage)
-					Set @PostID = SCOPE_IDENTITY()
+					SET @PostID = SCOPE_IDENTITY()
 					UPDATE POST SET MainPostReference = (@@IDENTITY) WHERE PostID = @@IDENTITY
 				END
 
@@ -96,7 +112,6 @@ AS
 		END
 	RETURN @ReturnCode
 GO				
-
 
 -- Returns all main posts order by the most recent comment in the thread
 CREATE PROCEDURE GetMainPosts 
@@ -143,7 +158,7 @@ AS
 		END
 	RETURN @ReturnCode
 GO
-
+				
 -- Gets all post for a given page number // Initially set for 10 posts per page
 CREATE PROCEDURE GetMainPostByPage
 (
@@ -272,38 +287,110 @@ AS
 		END
 	RETURN @ReturnCode
 GO	
-SELECT * FROM Images
-SELECT * FROM Post
-EXECUTE AddPost 'kyung4', '2019-03-10 11:00:00', 'My first lego idea', 'What do you think of my idea?', 1, null, 1  
+
+CREATE PROCEDURE UpdatePostVote
+(
+	@PostID		INT,
+	@UserName	VARCHAR(25),
+	@Vote		SMALLINT
+)
+AS
+	IF @PostID IS NULL
+		RAISERROR('StoredProcedure - UpdatePostVote - Missing Required Parameter: @PostID', 16, 1)
+	ELSE IF @UserName IS NULL
+		RAISERROR('StoredProcedure - UpdatePostVote - Missing Required Parameter: @UserName', 16, 1)
+	ELSE IF @Vote IS NULL
+		RAISERROR('StoredProcedure - UpdatePostVote - Missing Required Parameter: @Vote', 16, 1)
+	ELSE
+		BEGIN
+			DECLARE	@ReturnCode	INT
+			SET		@ReturnCode = 0
+
+			-- CHECK IF A RECORD EXISTS
+			IF EXISTS 
+			(
+				SELECT * 
+				FROM UserPostVote
+				WHERE UserName = @UserName AND PostID = @PostID
+			)
+				BEGIN
+					UPDATE UserPostVote
+					SET	   VoteCount = @Vote
+					WHERE  PostID = @PostID AND UserName = @UserName
+				END
+			ELSE
+				INSERT INTO UserPostVote (PostID, UserName, VoteCount)
+				VALUES (@PostID, @UserName, @Vote)
+
+			IF @@ERROR = 0
+				SET @ReturnCode = 0
+			ELSE
+				RAISERROR('StoredProcedure - UpdatePostVote: INSERT/UPDATE ERROR', 16, 1)
+		END
+	RETURN @ReturnCode
+GO	
+
+CREATE PROCEDURE GetUserVoteForPost
+(
+	@PostID		INT,
+	@UserName	VARCHAR(25)
+)
+AS
+	IF @PostID IS NULL
+		RAISERROR('StoredProcedure - GetUserVoteForPost - Missing Required Parameter: @PostID', 16, 1)
+	ELSE IF @UserName IS NULL
+		RAISERROR('StoredProcedure - GetUserVoteForPost - Missing Required Parameter: @UserName', 16, 1)
+	ELSE
+		BEGIN
+			DECLARE	@ReturnCode	INT
+			SET		@ReturnCode = 0
+
+			SELECT * 
+			FROM UserPostVote
+			WHERE PostID = @PostID AND UserName = @UserName
+
+			IF @@ERROR = 0
+				SET @ReturnCode = 0
+			ELSE
+				RAISERROR('StoredProcedure - GetUserVoteForPost: SELECT ERROR', 16, 1)
+		END
+	RETURN @ReturnCode
+GO		
+
+-- SAMPLE DATA
+INSERT INTO Users VALUES ('kyung4')
+INSERT INTO Users VALUES ('Alice')
+INSERT INTO Users VALUES ('Mary')
+INSERT INTO Users VALUES ('Bob')
+
+DECLARE @PostID INT
+EXECUTE AddPost 'kyung4', '2019-03-10 11:00:00', 'My first lego idea', 'What do you think of my idea?', 1, null, 1, @PostID
 EXECUTE AddImage 1, '~/Images/PostID1/Concept.jpg'
 
-EXECUTE AddPost 'kyung4', '2019-03-10 11:01:00', 'Bonsai Tree', 'Building this', 1, null, 1
+DECLARE @PostID INT
+EXECUTE AddPost 'kyung4', '2019-03-10 11:01:00', 'Bonsai Tree', 'Building this', 1, null, 1, @PostID
 EXECUTE AddImage 2, '~/Images/PostID2/Bonsai Tree.jpg'
 
-EXECUTE AddPost 'kyung4', '2019-03-10 11:02', 'Good idea', 'Can a builder please make it?', 0, 1, 0
+DECLARE @PostID INT
+EXECUTE AddPost 'kyung4', '2019-03-10 11:02', 'Good idea', 'Can a builder please make it?', 0, 1, 0, @PostID
 
-EXECUTE AddPost 'Bob', '2019-03-10 11:03', 'I''m designing this', 'Tell me what you think', 1, null, 1
+DECLARE @PostID INT
+EXECUTE AddPost 'Bob', '2019-03-10 11:03', 'I''m designing this', 'Tell me what you think', 1, null, 1, @PostID
 EXECUTE AddImage 4, '~/Images/PostID4/Residential.png'
 
-EXECUTE AddPost 'Alice', '2019-03-10 11:04', 'Would anyone ever want to buy this?', 'Yes?/No?', 1, null, 1
+DECLARE @PostID INT
+EXECUTE AddPost 'Alice', '2019-03-10 11:04', 'Would anyone ever want to buy this?', 'Yes?/No?', 1, null, 1, @PostID
 EXECUTE AddImage 5, '~/Images/PostID5/ResidentialHouse2.png'
 
-EXECUTE AddPost 'Mary', '2019-03-10 11:05', 'My dream home', 'I''ll pay you millions to build it', 1, null, 1
+DECLARE @PostID INT
+EXECUTE AddPost 'Mary', '2019-03-10 11:05', 'My dream home', 'I''ll pay you millions to build it', 1, null, 1, @PostID
 EXECUTE AddImage 6, '~/Images/PostID6/ResidentialHouse3.png'
-
-
-SELECT * FROM Post
-SELECT * FROM Images
 
 -- Get all the images for one post with provided PostID
 SELECT * FROM Post INNER JOIN Images ON Post.PostID = Images.PostID WHERE Post.PostID = 1
 
 -- Get all the posts for one thread (Missing the Main Post Itself)
 SELECT * FROM Post WHERE MainPostReference = 1 ORDER BY PostID
-
-EXECUTE GetThreadCount 1
-
-SELECT * FROM POst
 
 /** SAMPLE RUN 
 
@@ -317,6 +404,4 @@ D) SUBMITS BUTTON CLICK
 2) GET THE POSTID FROM THE LAST STATEMENT
 3) ITERATE THROUGH EACH IMAGE AND UPLOAD IT INTO THE IMAGES TABLE
 */
-SELECT * FROM POST
-SELECT * FROM Images
 

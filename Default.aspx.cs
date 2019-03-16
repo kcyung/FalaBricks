@@ -16,19 +16,12 @@ namespace FalaBricks.LegoSystem.UI
             // DISPLAYING ALL POSTS ON MAIN PAGE
             LS Controller = new LS();
             List<Post> mainPosts = Controller.FindMainForumPost();
-            
-            foreach(Post mp in mainPosts)
-            {
-                // Display Username + DateTime of Post
-                // Display Title
-                // Check if there's an image + post it
-                // Display UpVote CheckBox, Counter, DownVote Check Box
-                Main.Controls.Add(CreatePost(mp));
 
-                // Comment counter for the thread 
-                //int threadCount = mp.GetThreadCount();
+            foreach (Post mp in mainPosts)
+            {
+                Main.Controls.Add(CreatePost(mp));
             }
-            
+
             // DISPLAYING ALL THREADPOST
             int mainPostID = 1;
             /*
@@ -43,7 +36,7 @@ namespace FalaBricks.LegoSystem.UI
                 // Display UpVote CB, Counter, DownVote CB, Add Reply Button
             }      
             */
-            Post post = new Post(1, "henry", DateTime.Now, "title", "blah blah blah", 0, 0, true, 1, true);
+            //            Post post = new Post(1, "henry", DateTime.Now, "title", "blah blah blah", 0, 0, true, 1, true);
 
 
             //Main.Controls.Add(CreatePost(post));
@@ -64,18 +57,35 @@ namespace FalaBricks.LegoSystem.UI
             PostDiv.Attributes["class"] = "PostContainer";
             PostDiv.Attributes["style"] = "margin: 0 auto;  margin-bottom:15px; background-color:#464749; border-radius: 10px;  ";
 
+            // Check if the user has voted on this post before and assign appropriate upvote/downvote image
+           // int voteCount = Controller.FindUserVoteForPost(post.PostID, "Bob");
+
             //Create the upvote control
             ImageButton Upvote = new ImageButton();
             Upvote.ID = post.PostID.ToString() + "uv";
             Upvote.CssClass = "PostUpvote";
-            Upvote.ImageUrl = "image/upvote.png";
+
+            //if (voteCount > 0)
+            //    Upvote.ImageUrl = "image/UpVoteOn.png";
+            //else
+                Upvote.ImageUrl = "image/UpVoteOff.png";
+
+            Upvote.CommandArgument = post.PostID.ToString();
+            Upvote.Click += new ImageClickEventHandler(Upvote_Click);
             PostDiv.Controls.Add(Upvote);
 
             //Create the downvote control
             ImageButton Downvote = new ImageButton();
             Downvote.ID = post.PostID.ToString() + "dv";
             Downvote.CssClass = "PostDownvote";
-            Downvote.ImageUrl = "image/downvote.png";
+
+            //if (voteCount < 0)
+            //    Downvote.ImageUrl = "image/DownVoteOn.png";
+            //else
+                Downvote.ImageUrl = "image/DownVoteOff.png";
+
+            Downvote.CommandArgument = post.PostID.ToString();
+            Downvote.Click += new ImageClickEventHandler(Downvote_Click);
             PostDiv.Controls.Add(Downvote);
 
             //Create the Vote count Label
@@ -94,7 +104,7 @@ namespace FalaBricks.LegoSystem.UI
             TitleLbl.Text = post.Title;
             if (post.ContainsImage)
             {
-                TitleLbl.CssClass = "PostTitlewImage"; 
+                TitleLbl.CssClass = "PostTitlewImage";
             }
             else
             {
@@ -160,6 +170,87 @@ namespace FalaBricks.LegoSystem.UI
             }
 
             return PostDiv;
+        }
+
+        protected void Upvote_Click(object sender, EventArgs e)
+        {
+            if (!(sender is ImageButton))
+                return;
+
+            ImageButton upVoteButton = (ImageButton)sender;
+
+            // Find the control for the downVoteButton with the same PostID
+            string postIDstring = upVoteButton.CommandArgument;
+            int postID = Convert.ToInt32(upVoteButton.CommandArgument);
+
+            ContentPlaceHolder cph = (ContentPlaceHolder)this.Master.FindControl("ContentPlaceHolder1");
+
+            string downVoteID = postIDstring + "dv";
+            ImageButton downVoteButton = (ImageButton)cph.FindControl(downVoteID);
+
+            LS Controller = new LS();
+            bool Confirmation;
+            //string userName = "Bob";
+
+            // Check the state of upvote before event 
+            if (upVoteButton.ImageUrl == "image/UpVoteOff.png")
+            {
+                // Check if downVote button state was on -> turn it off
+                if (downVoteButton.ImageUrl == "image/DownVoteOn.png")
+                    downVoteButton.ImageUrl = "image/DownVoteOff.png";
+
+                // Turn on the upVote button
+                upVoteButton.ImageUrl = "image/UpVoteOn.png";
+
+                // Send the vote to sql db (parameters:user, postID, and value (+1 = upvoted) 0 (-1 =downvoted))
+              //  Controller.ModifyVotingSystem(postID, userName, 1);
+            }
+            else  // upVote button was previously On
+            {
+                upVoteButton.ImageUrl = "image/UpVoteOff.png";
+               // Confirmation = Controller.ModifyVotingSystem(postID, userName, 0);
+            }
+        }
+
+        protected void Downvote_Click(object sender, EventArgs e)
+        {
+            if (!(sender is ImageButton))
+                return;
+
+            ImageButton downVoteButton = (ImageButton)sender;
+
+            // Find the control for the downVoteButton with the same PostID
+            string postIDstring = downVoteButton.CommandArgument;
+            int postID = Convert.ToInt32(downVoteButton.CommandArgument);
+
+            ContentPlaceHolder cph = (ContentPlaceHolder)this.Master.FindControl("ContentPlaceHolder1");
+
+            string upVoteID = postIDstring + "uv";
+            ImageButton upVoteButton = (ImageButton)cph.FindControl(upVoteID);
+
+            LS Controller = new LS();
+            bool Confirmation;
+            //string userName = "Bob";
+
+            // Check the state of downvote before event 
+            if (downVoteButton.ImageUrl == "image/DownVoteOff.png")
+            {
+                // Check if upVote button state was on -> turn it off
+                if (upVoteButton.ImageUrl == "image/UpVoteOn.png")
+                    upVoteButton.ImageUrl = "image/UpVoteOff.png";
+
+                // Turn on the downVote button
+                downVoteButton.ImageUrl = "image/DownVoteOn.png";
+
+                // Send the vote to sql db (parameters:user, postID, and value (+1 = upvoted) 0 (-1 =downvoted))
+
+              //  Confirmation = Controller.ModifyVotingSystem(postID, userName, -1);
+            }
+            else  // downVote button was previously On
+            {
+                downVoteButton.ImageUrl = "image/DownVoteOff.png";
+                //Confirmation = Controller.ModifyVotingSystem(postID, userName, 0);
+            }
         }
 
         protected void TestButton_Click(object sender, EventArgs e)

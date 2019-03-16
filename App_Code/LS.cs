@@ -75,5 +75,18 @@ namespace FalaBricks.LegoSystem.Domain
             PostManager Manager = new PostManager();
             return Manager.GetThreadCount(mainPostReferenceID);
         }
+
+        // A user has made an initial or changed their vote for a post
+        public bool ModifyVotingSystem(int postID, string userName, int countValue)
+        {
+            PostManager Manager = new PostManager();
+            return Manager.UpdatePostVote(postID, userName, countValue);
+        }
+
+        public int FindUserVoteForPost(int postID, string userName)
+        {
+            PostManager Manager = new PostManager();
+            return Manager.GetUserVoteForPost(postID, userName);
+        }
     }
 }

@@ -284,6 +284,62 @@ namespace FalaBricks.LegoSystem.TechnicalServices
             return ThreadCount;
         }
 
+        public bool UpdatePostVote(int postID, string userName, int countValue)
+        {
+            SqlConnection connection = Connection(CONNECTION);
+            SqlCommand UpdatePostVoteCommand = StoredProcedureCommand("UpdatePostVote", connection);
+
+            SqlParameter postIDParameter = InputParameter("@PostID", SqlDbType.Int);
+            postIDParameter.Value = postID;
+
+            SqlParameter userNameParameter = InputParameter("@UserName", SqlDbType.VarChar);
+            userNameParameter.Value = userName;
+
+            SqlParameter countValueParameter = InputParameter("@Vote", SqlDbType.SmallInt);
+            countValueParameter.Value = countValue;
+
+            UpdatePostVoteCommand.Parameters.Add(postIDParameter);
+            UpdatePostVoteCommand.Parameters.Add(userNameParameter);
+            UpdatePostVoteCommand.Parameters.Add(countValueParameter);
+
+            int rowsAffected = 0;
+            connection.Open();
+            rowsAffected = UpdatePostVoteCommand.ExecuteNonQuery();
+            connection.Close();
+
+            if (rowsAffected == 1)
+                return true;
+            return false;
+        }
+
+        public int GetUserVoteForPost(int postID, string userName)
+        {
+            SqlConnection connection = Connection(CONNECTION);
+            SqlCommand GetUserVoteForPostCommand = StoredProcedureCommand("GetUserVoteForPost", connection);
+
+            SqlParameter postIDParameter = InputParameter("@PostID", SqlDbType.Int);
+            postIDParameter.Value = postID;
+
+            SqlParameter userNameParameter = InputParameter("@UserName", SqlDbType.VarChar);
+            userNameParameter.Value = userName;
+
+            GetUserVoteForPostCommand.Parameters.Add(postIDParameter);
+            GetUserVoteForPostCommand.Parameters.Add(userNameParameter);
+
+            SqlDataReader reader;
+            int userVote = 0;
+            connection.Open();
+            reader = GetUserVoteForPostCommand.ExecuteReader();
+
+            if (!reader.Read())
+                userVote = 0;
+            else
+                userVote = reader.GetInt16(reader.GetOrdinal("VoteCount"));
+
+            connection.Close();
+
+            return userVote;
+        }
         private List<Post> GetPostFromReader(SqlDataReader reader)
         {
             List<Post> list = new List<Post>();
