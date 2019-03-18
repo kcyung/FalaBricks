@@ -57,6 +57,16 @@ namespace FalaBricks.LegoSystem.UI
             PostDiv.Attributes["class"] = "PostContainer";
             PostDiv.Attributes["style"] = "margin: 0 auto;  margin-bottom:15px; background-color:#464749; border-radius: 10px;  ";
 
+            // Check if a user is logged in; in not - voteCount = 0;
+            int voteCount = 0;
+            string userName = null;
+
+            if (Session["User"] != null)
+            {
+                userName = Session["User"].ToString();
+                voteCount = Controller.FindUserVoteForPost(post.PostID, userName);
+            }
+
             // Check if the user has voted on this post before and assign appropriate upvote/downvote image
            // int voteCount = Controller.FindUserVoteForPost(post.PostID, "Bob");
 
@@ -65,9 +75,9 @@ namespace FalaBricks.LegoSystem.UI
             Upvote.ID = post.PostID.ToString() + "uv";
             Upvote.CssClass = "PostUpvote";
 
-            //if (voteCount > 0)
-            //    Upvote.ImageUrl = "image/UpVoteOn.png";
-            //else
+            if (voteCount > 0)
+                Upvote.ImageUrl = "image/UpVoteOn.png";
+            else
                 Upvote.ImageUrl = "image/UpVoteOff.png";
 
             Upvote.CommandArgument = post.PostID.ToString();
@@ -79,9 +89,9 @@ namespace FalaBricks.LegoSystem.UI
             Downvote.ID = post.PostID.ToString() + "dv";
             Downvote.CssClass = "PostDownvote";
 
-            //if (voteCount < 0)
-            //    Downvote.ImageUrl = "image/DownVoteOn.png";
-            //else
+            if (voteCount < 0)
+                Downvote.ImageUrl = "image/DownVoteOn.png";
+            else
                 Downvote.ImageUrl = "image/DownVoteOff.png";
 
             Downvote.CommandArgument = post.PostID.ToString();
@@ -177,6 +187,10 @@ namespace FalaBricks.LegoSystem.UI
             if (!(sender is ImageButton))
                 return;
 
+            // Must be logged in to vote
+            if (Session["User"] == null)
+                return;
+
             ImageButton upVoteButton = (ImageButton)sender;
 
             // Find the control for the downVoteButton with the same PostID
@@ -215,6 +229,9 @@ namespace FalaBricks.LegoSystem.UI
         protected void Downvote_Click(object sender, EventArgs e)
         {
             if (!(sender is ImageButton))
+                return;
+
+            if (Session["User"] == null)
                 return;
 
             ImageButton downVoteButton = (ImageButton)sender;
