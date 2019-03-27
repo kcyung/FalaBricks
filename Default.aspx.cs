@@ -68,7 +68,9 @@ namespace FalaBricks.LegoSystem.UI
             }
 
             // Check if the user has voted on this post before and assign appropriate upvote/downvote image
-           // int voteCount = Controller.FindUserVoteForPost(post.PostID, "Bob");
+            // int voteCount = Controller.FindUserVoteForPost(post.PostID, "Bob");
+
+            
 
             //Create the upvote control
             ImageButton Upvote = new ImageButton();
@@ -106,7 +108,38 @@ namespace FalaBricks.LegoSystem.UI
             VotecountLbl.Text = (post.UpCount - post.DownCount) + "";
             PostDiv.Controls.Add(VotecountLbl);
 
+            //Create the comment counter lbl(Will be hyperlink in the future)
+            Label CommentCountLbl = new Label();
+            CommentCountLbl.ID = post.PostID.ToString() + "cc";
+            CommentCountLbl.CssClass = "PostCommentCount";
+            CommentCountLbl.ForeColor = System.Drawing.Color.WhiteSmoke;
+            CommentCountLbl.Text = "Comments: " + Controller.GetThreadCount((int)post.MainPostReferenceID) + "";
+            PostDiv.Controls.Add(CommentCountLbl);
+
             //Create the Title Label(Will be hyperlink in the future)
+            /*
+            HyperLink TitleHL = new HyperLink();
+            TitleHL.ID = post.PostID.ToString() + "hl";
+            TitleHL.Font.Size = 20;
+            TitleHL.ForeColor = System.Drawing.Color.WhiteSmoke;
+            TitleHL.Text = post.Title;
+            */
+            LinkButton TitleLB = new LinkButton();
+            TitleLB.ID = post.PostID.ToString() + "hl";
+            TitleLB.Font.Size = 20;
+            TitleLB.ForeColor = System.Drawing.Color.WhiteSmoke;
+            TitleLB.Text = post.Title;
+            TitleLB.Click += new EventHandler(LinkButton_click);
+            if (post.ContainsImage)
+            {
+                TitleLB.CssClass = "PostTitlewImage";
+            }
+            else
+            {
+                TitleLB.CssClass = "PostTitlewoImage";
+            }
+
+            /*
             Label TitleLbl = new Label();
             TitleLbl.ID = post.PostID.ToString() + "tl";
             TitleLbl.Font.Size = 20;
@@ -120,16 +153,10 @@ namespace FalaBricks.LegoSystem.UI
             {
                 TitleLbl.CssClass = "PostTitlewoImage";
             }
+            */
+            PostDiv.Controls.Add(TitleLB);
 
-            PostDiv.Controls.Add(TitleLbl);
-
-            //Create the comment counter lbl(Will be hyperlink in the future)
-            Label CommentCountLbl = new Label();
-            CommentCountLbl.ID = post.PostID.ToString() + "cc";
-            CommentCountLbl.CssClass = "PostCommentCount";
-            CommentCountLbl.ForeColor = System.Drawing.Color.WhiteSmoke;
-            CommentCountLbl.Text = "Comments: " + Controller.GetThreadCount((int)post.MainPostReferenceID) + "";
-            PostDiv.Controls.Add(CommentCountLbl);
+            
 
             //Create the Post date Lbl
             Label PostDateLbl = new Label();
@@ -163,10 +190,9 @@ namespace FalaBricks.LegoSystem.UI
                 */
 
                 //Create the image
-                ImageButton img = new ImageButton();
-                img.CommandArgument = post.PostID.ToString();
-                img.Attributes["width"] = "150px";
-                img.Attributes["height"] = "150px";
+                Image img = new Image();
+                img.Attributes["width"] = "1000px";
+                img.Attributes["height"] = "600px";
                 post.PostImages = Controller.FindImagesByPostID(post.PostID);
                 img.ImageUrl = post.PostImages[0].ImagePath;//"image/img150.png";
                 /*
@@ -268,6 +294,23 @@ namespace FalaBricks.LegoSystem.UI
                 downVoteButton.ImageUrl = "image/DownVoteOff.png";
                 //Confirmation = Controller.ModifyVotingSystem(postID, userName, 0);
             }
+        }
+
+        protected void LinkButton_click(object sender, EventArgs e)
+        {
+            if (!(sender is LinkButton))
+                return;
+            /*
+            if (Session["User"] == null)
+                return;
+            */
+            LinkButton button = (LinkButton)sender;
+            string PostID = button.ID.ToString();
+            PostID = PostID.Substring(0, PostID.Length - 2);
+            Session["PostID"] = PostID;
+
+            Response.Redirect("Comments.aspx");
+
         }
 
         protected void TestButton_Click(object sender, EventArgs e)
